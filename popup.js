@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   console.log('chrome.extension.getBackgroundPage().highlighterEnabled: ' + chrome.extension.getBackgroundPage().highlighterEnabled);
   // console.log('localStorage[\'highlightCandidatesOnThisTab\']', localStorage['highlightCandidatesOnThisTab']);
-  console.log('localStorage[\'highlightCandidatesOnAllTabs\']', localStorage['highlightCandidatesOnAllTabs']);
+  // console.log('localStorage[\'highlightCandidatesOnAllTabs\']', localStorage['highlightCandidatesOnAllTabs']);
   if (chrome.extension.getBackgroundPage().highlighterEnabled === undefined) {
     chrome.extension.getBackgroundPage().highlighterEnabled = false;
     localStorage['highlightCandidatesOnAllTabs'] = 'false';
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let showEditor = false;
   $('#openEditPanelButton').click((event) => {
     chrome.extension.getBackgroundPage().highlighterEnabled = true;
-    console.log('openEditPanelButton button onClick -- popup.js');
+    // console.log('openEditPanelButton button onClick -- popup.js');
     $('#highlightingMasterSwitch').prop('checked', true);
 
     // Need enable/disable logic here

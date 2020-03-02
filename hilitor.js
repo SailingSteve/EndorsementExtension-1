@@ -64,8 +64,6 @@ function Hilitor (id, tag) {
     });
 
     // --------------------------
-    console.log('BIGBIG duped sortedKeys.length ' + sortedKeys.length);
-
     debugH && console.log('duped sortedKeys.length ' + sortedKeys.length);
 
     let names = [];
@@ -80,7 +78,6 @@ function Hilitor (id, tag) {
         names.push(name);
       }
     }
-    console.log('BIGBIG deduped name list size ' + names.length);
     debugH && console.log('deduped name list size ' + names.length);
 
 
@@ -159,14 +156,14 @@ function Hilitor (id, tag) {
     // Before change this was...  if (skipTags.test(node.nodeName)||skipClasses.test(node.className)) {return;}
     if (skipTags.test(node.nodeName) ||
       skipClasses.test(node.className) ||
-      node.id === 'u2i-id-1' ||                         // jQuery UI Dialogs
+      node.id === 'weVoteModal' ||                         // jQuery UI Dialogs
       node.id === 'noDisplayPageBeforeFraming' ||
       node.id === 'weContainer') {
       debugH && console.log('hiliteWords early recursive return node.id: ' + node.id);
       return;
     }
     debugH && console.log('hiliteWords early recursive CONTINUE node.id: ' + node.id);
-    // console.log('BIGBIG before iterating Through every child node using highlight words cnt: ' + (node.hasChildNodes() ? node.childNodes.length : 0));
+    debugH && console.log('hiliteWords before iterating Through every child node using highlight words cnt: ' + (node.hasChildNodes() ? node.childNodes.length : 0));
     // End of modification for WeVote
 
     if (node.hasChildNodes()) {
@@ -238,7 +235,7 @@ function Hilitor (id, tag) {
                 urlsForHighlights[$(node.parentNode).text().toLowerCase()] = $(node.parentNode).attr('href');
               }
               // Icon within highlights in the DOM of the endorsement page
-              if(wordColor[word].Icon.length) {
+              if (wordColor[word].Icon.length) {
                 $(match).prepend(wordColor[word].Icon);
               }
 

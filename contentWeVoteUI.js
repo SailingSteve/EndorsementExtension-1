@@ -24,7 +24,7 @@ let state = {
  * @returns {boolean} - return true to indicate that we want to call the response function asynchronously
  */
 function displayHighlightingAndPossiblyEditor (showHighlights, showEditor, tabId) {  // eslint-disable-line no-unused-vars
-  console.log('BIGBIG displayHighlightingAndPossiblyEditor showHighlights: ', showHighlights, ', showEditor: ', showEditor, ', tabId: ', tabId);
+  // console.log('displayHighlightingAndPossiblyEditor showHighlights: ', showHighlights, ', showEditor: ', showEditor, ', tabId: ', tabId);
   try {
     if(showHighlights || showEditor) {
       console.log('displayHighlightingAndPossiblyEditor ----- for tab: ' + tabId);
@@ -41,7 +41,7 @@ function displayHighlightingAndPossiblyEditor (showHighlights, showEditor, tabId
 }
 
 function displayEditPanes () {
-  console.log('Building WeVote UI --------------------------------');
+  // console.log('Building WeVote UI --------------------------------');
   let hr = window.location.href;
   let bod = $('body');
   $(bod).children().wrapAll("<div id='noDisplayPageBeforeFraming' >").hide();  // if you remove it, other js goes nuts
@@ -255,11 +255,11 @@ function getRefreshedHighlights () {
       if (lastError) {
         console.warn(' chrome.runtime.sendMessage("getHighlights") refresh ', lastError.message);
       }
-      console.log('getRefreshedHighlights() response', response);
+      // console.log('getRefreshedHighlights() response', response);
 
       if (response) {
         debugLog('SUCCESS: getRefreshedHighlights received a response', response);
-        console.log('getRefreshedHighlights reloading iframe[0]');
+        // console.log('getRefreshedHighlights reloading iframe[0]');
         // eslint-disable-next-line prefer-destructuring
         let frame = $('iframe')[0];
         frame.contentWindow.location.reload();
@@ -803,6 +803,7 @@ function openSuggestionPopUp (selection) {
     if (!candidate) {
       mutableCandidate = {
         name: selection,
+        candidateWeVoteId: nameToIdMap[candidateName.toLowerCase()],
         office: '',
         party: undefined,
         photo: defaultImage,
@@ -832,7 +833,7 @@ function openSuggestionPopUp (selection) {
       '-webkit-box-shadow': '10px 10px 5px 0px rgba(0,0,0,0.4)',
       '-moz-box-shadow': '10px 10px 5px 0px rgba(0,0,0,0.4)',
       'box-shadow': '10px 10px 5px 0px rgba(0,0,0,0.4)'
-    });
+    }).attr('id', 'weVoteModal');
     dialogTitlebarStyling();
     $('#unfurlable-' + i).css('height', i === 1000 ?'80px' : '66px');
     const can = '.candidateWe.1000';
@@ -863,8 +864,21 @@ function openSuggestionPopUp (selection) {
 
 function getCandidateQuery (candidateName, doFunc) {
   const candidateWeVoteId = nameToIdMap[candidateName.toLowerCase()];
+  let candidate = {};
   if (!candidateWeVoteId) {
-    return undefined;
+    candidate = {
+      name: candidateName,
+      candidateWeVoteId: '',
+      office: '',
+      party: undefined,
+      photo: defaultImage,
+      comment: '',
+      url: window.location.href,
+      stance: 'SUPPORT',
+      description: '',
+    };
+    doFunc(candidate);
+    return;
   }
 
   const {chrome: {runtime: {sendMessage}}} = window;
@@ -879,24 +893,27 @@ function getCandidateQuery (candidateName, doFunc) {
     }
 
     // console.log('getCandidateQuery() response', response);
-    const { ballot_item_display_name: name, party, contest_office_name: office, candidate_photo_url_medium: photo, twitter_description: twitter, ballotpedia_candidate_summary: ballotpedia } = response.res;
-    const description = twitter && twitter.length ? twitter : '' +
-    ballotpedia && ballotpedia.length ? ' ' + ballotpedia : '';
-
-    const candidate = {
-      name,
-      office,
-      party,
-      photo,
-      comment: '',
-      url: window.location.href,
-      stance: 'SUPPORT',  // need to figure out
-      description,
-    };
+    const { success, message, ballot_item_display_name: name, party, contest_office_name: office, candidate_photo_url_medium: photo, twitter_description: twitter, ballotpedia_candidate_summary: ballotpedia } = response.res;
+    if (success) {
+      const description = twitter && twitter.length ? twitter : '' +
+        ballotpedia && ballotpedia.length ? ' ' + ballotpedia : '';
+      candidate = {
+        name,
+        candidateWeVoteId,
+        office,
+        party,
+        photo,
+        comment: '',
+        url: window.location.href,
+        stance: 'SUPPORT',  // need to figure out
+        description,
+      };
+    } else {
+      console.warn('getCandidate failed with message: ', message);
+    }
 
     // console.log('getCandidateQuery() candidate: ', candidate);
     doFunc(candidate);
-    return candidate;  // not needed?
   });
 }
 

@@ -8,7 +8,7 @@ let debug = false;
 /* eslint no-undef: 0 */
 
 function getHighlightsListFromApiServer (locationHref, doReHighlight, sendResponse, election) {
-  console.log('getHighlightsListFromApiServer received election: ' + election);
+  debug && console.log('getHighlightsListFromApiServer received election: ' + election);
 
   const hrefEncoded = encodeURIComponent(locationHref); //'https://www.emilyslist.org/pages/entry/state-and-local-candidates');
   const apiURL = `${rootApiURL}/voterGuidePossibilityHighlightsRetrieve?voter_device_id=${localStorage['voterDeviceId']}&url_to_scan=${hrefEncoded}`;

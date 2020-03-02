@@ -51,11 +51,10 @@ $(() => {
     command: 'myTabId',
   }, function (response) {
     const { tabId } = response;
-    console.log('tabWordHighlighter this tab.id: ' + tabId);
+    // console.log('tabWordHighlighter this tab.id: ' + tabId);
   });
 
-  console.log('Hack that sets debugLocal to true in place ------------------------------------');
-  window.debugLocal = true;
+  window.debugLocal = false;
 
 
   if (window.location === window.parent.location) {
@@ -74,16 +73,15 @@ $(() => {
         });
 
         // localStorage['voterDeviceId'] = getVoterDeviceIdFromWeVoteDomainPage();
-        console.log('getVoterDeviceIdFromWeVoteDomainPage ------------AFTER Storage--------------> ' + localStorage['voterDeviceId']);
+        debug && console.log('getVoterDeviceIdFromWeVoteDomainPage ------------AFTER Storage--------------> ' + localStorage['voterDeviceId']);
       } else {
-        console.log('getVoterDeviceIdFromWeVoteDomainPage ------------AFTER aborted Storage--------------> zero length devive id');
+        debug && console.log('getVoterDeviceIdFromWeVoteDomainPage ------------AFTER aborted Storage--------------> zero length devive id');
       }
     }
     //only listen for messages in the main page, not in iframes
     chrome.runtime.onMessage.addListener(
       function (request, sender, sendResponse) {
-        /* debug && */
-        console.log('onMessage.addListener() in tabWordHighlighter got a message: '+ request.command);
+        debug && console.log('onMessage.addListener() in tabWordHighlighter got a message: '+ request.command);
 
         if (sender.id === 'pmpmiggdjnjhdlhgpfcafbkghhcjocai' ||
             sender.id === 'eofojjpbgfdogalmibgljcgdipkhoclc' ||
@@ -157,7 +155,7 @@ function jumpNext () {
 }
 
 function showMarkers () {
-  debug && console.log('STEVE, background showMarkers');
+  debug && console.log('background showMarkers invoked');
   var element = document.getElementById('HighlightThisMarkers');
   if (element) {
     element.parentNode.removeChild(element);
@@ -184,7 +182,7 @@ function showMarkers () {
 }
 
 function reHighlight (words) {
-  console.log('BIGBIG function reHighlight(words)');
+  debug && console.log('function reHighlight(words)');
   for (let group in words) {
     if (words[group].Enabled) {
       for (word in words[group].Words) {
@@ -209,7 +207,7 @@ function getVoterDeviceIdFromWeVoteDomainPage () {
   const tag = 'voter_device_id';
   let b = document.cookie.match('(^|[^;]+)\\s*' + tag + '\\s*=\\s*([^;]+)');
   let id = b ? b.pop() : '';
-  console.log('getVoterDeviceIdFromWeVoteDomainPage ------------TE--------------> ' + id);
+  // console.log('getVoterDeviceIdFromWeVoteDomainPage ------------TE--------------> ' + id);
   return id;
 }
 
@@ -218,7 +216,7 @@ function getVoterDeviceIdFromWeVoteDomainPage () {
 // on the endorsement page that is displayed in the tab (for example, https://www.sierraclub.org/california/2020-endorsements/).
 function sendGetStatus () {
   chrome.runtime.sendMessage({command: 'getStatus'}, function (response) {
-    console.log('BIGBIG chrome.runtime.sendMessage({command: \'getStatus\'}');
+    debug && console.log('chrome.runtime.sendMessage({command: \'getStatus\'}');
     let {lastError} = chrome.runtime;
     if (lastError) {
       console.warn('chrome.runtime.sendMessage("getStatus")', lastError.message);
@@ -227,7 +225,7 @@ function sendGetStatus () {
     debug && console.log('reponse from getStatus', window.location);
     highlighterEnabled = response.highlighterEnabled;
     highlighterEnabledThisTab  = response.highlighterEnabled;  // These start out identical, but this one is initialized us false
-    console.log('BIGBIG response from sendStatus highlighterEnabled: ', highlighterEnabled, ', highlighterEnabledThisTab: ', highlighterEnabledThisTab);
+    debug && console.log('response from sendStatus highlighterEnabled: ', highlighterEnabled, ', highlighterEnabledThisTab: ', highlighterEnabledThisTab);
     if (highlighterEnabled) {
       debug && console.log('about to get words', window.location);
       getWordsThenStartHighlighting();
@@ -236,7 +234,7 @@ function sendGetStatus () {
 }
 
 function getWordsThenStartHighlighting () {
-  console.log('BIGBIG Called getWordsThenStartHighlighting()');
+  debug && console.log('Called getWordsThenStartHighlighting()');
   chrome.runtime.sendMessage({
     command: 'getWords',
     url: location.href.replace(location.protocol + '//', ''),
@@ -378,14 +376,14 @@ function findWords () {
     Highlight=false;
 
     setTimeout(function () {
-      /*debug &&*/ console.log('BIGBIG finding words',window.location);
+      debug && console.log('finding words',window.location);
 
       ReadyToFindWords=false;
 
       var changed = false;
       var myHilitor = new Hilitor();
       var highlights = myHilitor.apply(wordsArray, printHighlights);
-      console.log('BIGBIG after myHilitor.apply num highlights: ' + highlights.numberOfHighlights);
+      console.log('findWords() after myHilitor.apply num highlights: ' + highlights.numberOfHighlights);
       if (highlights.numberOfHighlights > 0) {
         highlightMarkers = highlights.markers;
         markerPositions = [];

@@ -74,7 +74,7 @@ function promoteAliasesThatArriveAsDefault (highlightsList) {
 
       const { display: displayMatch, stance: stanceMatch } = match;
       if (displayMatch !== 'DEFAULT') {
-        console.log('For ' + name + ' overwriting to ' + displayMatch + ', ' + stanceMatch + ', from ', match);
+        debugE && console.log('For ' + name + ' overwriting to ' + displayMatch + ', ' + stanceMatch + ', from ', match);
         highlight.display = displayMatch;
         highlight.stance = stanceMatch;
       }
@@ -186,8 +186,7 @@ function getIcon (typeStance) {
 }
 
 function createSearchMenu (){
-  /* debugE&& */
-  console.log('createSearchMenu has been called');
+  debugE && console.log('createSearchMenu has been called');
   getPlatformInfo(
     function () {
       create({
@@ -300,7 +299,7 @@ function setEnableForActiveTab (showHighlights, showEditor, tab) {
     }
   }
 
-  console.log('ENABLED STATE CHANGE, now showHighlights = ' + showHighlights + ', showEditor = ' + showEditor + ', tab.id = ' + tab.id + ', tab.url = ' + tab.url);
+  // console.log('ENABLED STATE CHANGE, now showHighlights = ' + showHighlights + ', showEditor = ' + showEditor + ', tab.id = ' + tab.id + ', tab.url = ' + tab.url);
   const { id: tabId, url } = tab;
 
   // Shouldn't be necessary ... Feb 27, 2019
@@ -514,7 +513,6 @@ chrome.runtime.onMessage.addListener(
     } else if(request.command==='beep') {
       document.body.innerHTML += '<audio src="beep.wav" autoplay="autoplay"/>';
     } else if(request.command==='getStatus') {
-      console.log('BIGBIG if(request.command===\'getStatus\') highlighterEnabled: ', highlighterEnabled);
       sendResponse({highlighterEnabled});
     } else if(request.command==='updateContextMenu'){
       updateContextMenu(request.url);
@@ -551,7 +549,7 @@ chrome.runtime.onMessage.addListener(
 
 
 function requestReHighlight (){
-  console.log('BIGBIG requestReHighlight() called');
+  // console.log('requestReHighlight() called');
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     let id = '';
     let url = '';
