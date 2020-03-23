@@ -115,8 +115,6 @@ document.addEventListener('DOMContentLoaded', function () {
   $('#jumpToMyBallot').click(() => {
     window.open(ballotWebAppURL, '_blank');
   });
-
-
 });
 
 function updateButtonState () {

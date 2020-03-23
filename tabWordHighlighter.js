@@ -41,7 +41,7 @@ let voterInfo = {};
 let uniqueNameMatches = [];
 let voterDeviceId = '';
 let tabId = -1;
-var debug = false;
+var debug = true;
 let urlsForHighlights = {};
 
 
